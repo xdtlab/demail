@@ -14,9 +14,9 @@
     (= (:state db) :logging-in)))
 
 (re-frame/reg-sub
-  ::public-key
+  ::account
   (fn [db]
-    (.getAddress (:wallet db))))
+    (:account db)))
 
 (re-frame/reg-sub
   ::balance

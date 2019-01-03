@@ -5,7 +5,7 @@
             [demail.events :as events]))
 
 (defn login-panel []
-  (let [login-info (reagent/atom {:seed "" :salt ""})]
+  (let [login-info (reagent/atom {:account "" :seed "" :salt ""})]
     (fn []
       [:form
         [:div
@@ -13,6 +13,7 @@
           [:div.field
             [:div.field [:input.input {:type :text :spell-check false :placeholder "Seed" :on-change #(swap! login-info assoc :seed (-> % .-target .-value))}]]
             [:div.field [:input.input {:type :password :placeholder "Salt" :on-change #(swap! login-info assoc :salt (-> % .-target .-value))}]]
+            [:div.field [:input.input {:type :text :spell-check false :placeholder "Account" :on-change #(swap! login-info assoc :account (-> % .-target .-value))}]]
             [:div.has-text-centered.is-size-7
               [:a {:on-click #(js/swal "Towards simpler accounts..." "Login to your account with two random strings Seed & Salt!" "info")}
               "(WTH?!)"]]]
@@ -84,27 +85,17 @@
 
 (defn main-panel []
   (let [is-sending (reagent/atom false)
-        is-receiving (reagent/atom false)
-        public-key (re-frame/subscribe [::subs/public-key])]
+        account (re-frame/subscribe [::subs/account])]
     (fn []
       [:div
-        [:p.has-text-centered.is-size-7 (str @public-key)]
+        [:p.has-text-centered.is-size-3 (str @account)]
         (if @is-sending
           [send-dialog #(reset! is-sending false)
             #(re-frame/dispatch [::events/new-transaction])])
-        (if @is-receiving
-          [receive-dialog @public-key #(reset! is-receiving false)])
-
-        (let [balance (re-frame/subscribe [::subs/balance])]
-          [:h1.title.has-text-centered.has-text-weight-light {:style {:font-family "Cairo"}}
-            (if @balance
-              (js/daten.Wallet.formatAmount @balance)
-              "Connecting...")])
 
         [transaction-list]
         [:div.buttons.is-centered
-          [:button.button.is-success {:on-click #(reset! is-sending true)} "Send"]
-          [:button.button.is-danger {:on-click #(reset! is-receiving true)} "Receive"]]])))
+          [:button.button.is-success {:on-click #(reset! is-sending true)} "Compose"]]])))
 
 (defn start []
   [:div.hero.is-fullheight

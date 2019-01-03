@@ -14,7 +14,7 @@
 
 (re-frame/reg-event-fx
   ::login
-  (fn [{:keys [db]} [_ {:keys [seed salt]}]]
+  (fn [{:keys [db]} [_ {:keys [seed salt account]}]]
     (cond
       (empty? seed)
         {::effects/swal {:title "Please enter a seed!"
@@ -24,9 +24,13 @@
         {::effects/swal {:title "Please enter a salt!"
                          :text "Additional security for generating a private-key!"}}
 
+      (empty? account)
+        {::effects/swal {:title "Please enter your account name!"
+                         :text "E.g. @john.demail"}}
+
       :else
         (let [private-key (js/daten.hash.regular (js/daten.utils.encodeUtf8 (str seed salt)))]
-          {:db (assoc db :state :logging-in)
+          {:db (assoc db :state :logging-in :account account)
            ::effects/connect {:private-key  private-key
                               :on-success   #(re-frame/dispatch [::login-success %])
                               :on-fail      #(re-frame/dispatch [::login-fail])}}))))
