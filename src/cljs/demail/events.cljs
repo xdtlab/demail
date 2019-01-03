@@ -29,11 +29,16 @@
                          :text "E.g. @john.demail"}}
 
       :else
-        (let [private-key (js/daten.hash.regular (js/daten.utils.encodeUtf8 (str seed salt)))]
-          {:db (assoc db :state :logging-in :account account)
-           ::effects/connect {:private-key  private-key
-                              :on-success   #(re-frame/dispatch [::login-success %])
-                              :on-fail      #(re-frame/dispatch [::login-fail])}}))))
+        (try
+          (let [private-key (js/daten.hash.regular (js/daten.utils.encodeUtf8 (str seed salt)))
+                account (js/daten.address.Address.fromString account)]
+            {:db (assoc db :state :logging-in :account account)
+             ::effects/connect {:private-key  private-key
+                                :on-success   #(re-frame/dispatch [::login-success %])
+                                :on-fail      #(re-frame/dispatch [::login-fail])}})
+          (catch :default ex
+            {::effects/swal {:title "Invalid account name!"
+                             :text "Account name should be in format: @john.demail"}})))))
 
 (re-frame/reg-event-fx
   ::login-success
