@@ -2,6 +2,7 @@
   (:require
    [reagent.core :as reagent]
    [re-frame.core :as re-frame]
+   [demail.effects :as effects]
    [demail.events :as events]
    [demail.views :as views]
    [demail.config :as config]
@@ -15,7 +16,7 @@
 
 (defn mount-root []
   (re-frame/clear-subscription-cache!)
-  (reagent/render [views/main-panel]
+  (reagent/render [views/start]
                   (.getElementById js/document "app")))
 
 (defn ^:export init []

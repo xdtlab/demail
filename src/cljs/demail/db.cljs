@@ -1,4 +1,8 @@
 (ns demail.db)
 
 (def default-db
-  {:name "re-frame"})
+  {:state :not-logged-in
+   :balance nil
+   :wallet nil
+   :transactions {}
+   :pendings {}})

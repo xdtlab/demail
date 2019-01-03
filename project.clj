@@ -29,8 +29,7 @@
    {:dependencies [[binaryage/devtools "0.9.10"]]
 
     :plugins      [[lein-figwheel "0.5.16"]]}
-   :prod { }
-   }
+   :prod { }}
 
   :cljsbuild
   {:builds
@@ -44,6 +43,8 @@
                     :source-map-timestamp true
                     :preloads             [devtools.preload]
                     :external-config      {:devtools/config {:features-to-install :all}}
+                    :externs              ["resources/public/js/externs/daten.js"
+                                           "resources/public/js/externs/sweetalert2.js"]
                     }}
 
     {:id           "min"
@@ -52,8 +53,11 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}
-                    :pretty-print    false}}
+                    :pretty-print    false
+                    :externs         ["resources/public/js/externs/daten.js"
+                                      "resources/public/js/externs/sweetalert2.js"]}}
 
 
     ]}
+
   )
